@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:layout_marginLeft="8dp"
+        android:id="@+id/skill_name"
+        android:text="Skill Name"
+        android:layout_width="0sp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.3"
+        android:gravity="center" />
+    <TextView
+        android:layout_marginLeft="8dp"
+        android:id="@+id/skill_ability"
+        android:text="Ability"
+        android:layout_width="0sp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.1"
+        android:textAllCaps="true"
+        android:maxLength="3"
+        android:gravity="center_vertical" />
+    <TextView
+        android:layout_marginLeft="8dp"
+        android:id="@+id/skill_total"
+        android:text="Skill Total"
+        android:layout_width="0sp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.1"
+        android:gravity="center_vertical" />
+    <TextView
+        android:layout_marginLeft="8dp"
+        android:id="@+id/skill_ability_mod"
+        android:text="Ability Mod"
+        android:layout_width="0sp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.1"
+        android:gravity="center_vertical" />
+
+
+
+    <TextView
+        android:layout_width="0sp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.1"
+        android:gravity="center_vertical" />
+    <TextView
+        android:id="@+id/skill_ranks"
+        android:text="Ranks"
+        android:layout_width="0sp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.1"
+        android:gravity="center_vertical" />
+    <TextView
+        android:layout_width="0sp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.1"
+        android:gravity="center_vertical" />
+</LinearLayout>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    </ListView>
+</LinearLayout>
