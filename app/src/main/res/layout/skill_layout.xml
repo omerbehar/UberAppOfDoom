@@ -11,15 +11,56 @@
         android:layout_height="fill_parent"
         android:layout_weight="0.3"
         android:gravity="center" />
+    <!--<TextView-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:id="@+id/skill_ability"-->
+        <!--android:layout_width="0sp"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:layout_weight="0.1"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:maxLength="3"-->
+        <!--android:gravity="center"-->
+        <!--android:visibility="invisible"/>-->
     <TextView
         android:layout_marginLeft="8dp"
-        android:id="@+id/skill_ability"
+        android:id="@+id/skill_ability_mod"
+        android:layout_width="0sp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.1"
+        android:gravity="center"
+        />
+    <TextView
+        android:layout_marginLeft="8dp"
+        android:id="@+id/misc_skill_mod"
         android:layout_width="0sp"
         android:layout_height="fill_parent"
         android:layout_weight="0.1"
         android:textAllCaps="true"
-        android:maxLength="3"
         android:gravity="center" />
+    <Button
+        android:focusable="false"
+        android:id="@+id/sub_skill_rank_button"
+        android:layout_width="0sp"
+        android:layout_weight="0.1"
+        android:layout_height="fill_parent"
+        android:onClick="subRank"
+        android:text="-"
+        android:enabled="false"/>
+    <TextView
+        android:id="@+id/skill_ranks"
+        android:layout_width="0sp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.1"
+        android:gravity="center" />
+    <Button
+        android:focusable="false"
+        android:id="@+id/add_skill_rank_button"
+        android:layout_width="0sp"
+        android:layout_weight="0.1"
+        android:layout_height="fill_parent"
+        android:onClick="addRank"
+        android:text="+"
+        />
     <TextView
         android:layout_marginLeft="8dp"
         android:id="@+id/skill_total"
@@ -27,36 +68,4 @@
         android:layout_height="fill_parent"
         android:layout_weight="0.1"
         android:gravity="center" />
-    <TextView
-        android:layout_marginLeft="8dp"
-        android:id="@+id/skill_ability_mod"
-        android:layout_width="0sp"
-        android:layout_height="fill_parent"
-        android:layout_weight="0.1"
-        android:gravity="center" />
-
-
-
-    <Button
-        android:id="@+id/sub_rank"
-        android:layout_width="0sp"
-        android:layout_weight="0.1"
-        android:layout_height="fill_parent"
-        android:onClick="selectSkill"
-        android:text="-"
- />
-    <TextView
-        android:id="@+id/skill_ranks"
-        android:layout_width="0sp"
-        android:layout_height="fill_parent"
-        android:layout_weight="0.1"
-        android:gravity="center_vertical" />
-    <Button
-        android:id="@+id/add_rank"
-        android:layout_width="0sp"
-        android:layout_weight="0.1"
-        android:layout_height="fill_parent"
-        android:onClick="selectSkill"
-        android:text="+"
-        />
 </LinearLayout>

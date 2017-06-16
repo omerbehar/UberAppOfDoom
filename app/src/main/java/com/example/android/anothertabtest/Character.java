@@ -9,19 +9,28 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static android.R.attr.key;
+import static android.R.attr.level;
+import static android.R.attr.max;
+import static android.app.PendingIntent.getActivity;
+import static com.example.android.anothertabtest.MainActivity.dubo;
+import static com.example.android.anothertabtest.R.raw.skills;
+
 /**
- * creates a d20 3.5 edition character
+ * creates a d20 3.5 edition Character
  * @author Omer Behar
  * @version 1.0 - 10.6.2016
  */
-public class character
+public class Character
 {
     private ArrayList<String> charactersSelectedFeats=new ArrayList<String>();
     private String charName;
-    public Map<String,Integer> initialCharactersAttributes=new HashMap<String,Integer>();
-    public Map<String,Integer> calculatedCharactersAttributes=new HashMap<String,Integer>();
-    private ArrayList<ability> abilities=new ArrayList<ability>();
-    public ArrayList<String> classList=new ArrayList<String>();
+    public Map<String,Integer> initialCharactersAttributes=new HashMap<>();
+    public Map<String,Integer> calculatedCharactersAttributes=new HashMap<>();
+    private ArrayList<ability> abilities=new ArrayList<>();
+    public ArrayList<String> classList=new ArrayList<>();
     private String charRace;
     ability strength=new ability("Strength");
     ability constitution=new ability("Constitution");
@@ -31,12 +40,26 @@ public class character
     ability wisdom=new ability("Wisdom");
     Random rand = new Random();
     Scanner sc = new Scanner(System.in);
+    private Map<String,CharacterSkill> characterSkillMap = new HashMap<>();
+    private characterChangeListener listener;
+    private ArrayList<Integer> miscSkillMod= new ArrayList<>();
+    private ArrayList<Integer> skillSynergiesMod= new ArrayList<>();
+    private ArrayList<Integer> skillTotal = new ArrayList<>();
+    private int bluffDiplomacy;
+    private int knowledgeDiplomacy;
+    private int senseMotiveDiplomacy;
+    private Map<String, Integer> crossClassList = new HashMap<>();
+
     /**
-     constracts a new character with a given name, according to a chosen data base, and an empty feat list.
+     constracts a new Character with a given name, according to a chosen data base, and an empty feat list.
      */
-    public character(String charName)
+    public Character(characterChangeListener listener)
     {
-        this.charName = charName;
+        this.bluffDiplomacy=0;
+        this.knowledgeDiplomacy=0;
+        this.senseMotiveDiplomacy=0;
+        this.listener=listener;
+        this.charName = "";
         initialCharactersAttributes.put("level",0);
         initialCharactersAttributes.put("fighterLevel",0);
         initialCharactersAttributes.put("casterLevel",0);
@@ -69,11 +92,17 @@ public class character
         initialCharactersAttributes.put("raceWisdom",0);
         initialCharactersAttributes.put("raceIntelligence",0);
         initialCharactersAttributes.put("raceCharisma",0);
+        initialCharactersAttributes.put("intelligenceBonus",0);
+
         try
         {
             for (Skill tempSkill:Database.getInstance().skills)
             {
+                miscSkillMod.add(0);
+                skillSynergiesMod.add(0);
+                skillTotal.add(-5);
                 initialCharactersAttributes.put(tempSkill.getSkillName().toLowerCase(),0);
+                initialCharactersAttributes.put(tempSkill.getSkillName().toLowerCase()+"Rank",0);
             }
         }
         catch (Exception ex)
@@ -89,7 +118,7 @@ public class character
     }
 
     /**
-     * this method sets the character's class.
+     * this method sets the Character's class.
      * @param selected class name.
      */
     public void levelUp(int level)
@@ -144,7 +173,7 @@ public class character
     }
 
     /**
-     * this method sets a random character's ability (Strength, Constitution, Dexterity, Charisma, Intelligence or Wisdom).
+     * this method sets a random Character's ability (Strength, Constitution, Dexterity, Charisma, Intelligence or Wisdom).
      */
     public void setCharName(String newCharName)
     {
@@ -164,7 +193,7 @@ public class character
     }
 
     /**
-     * this method sets a character's ability (Strength, Constitution, Dexterity, Charisma, Intelligence or Wisdom).
+     * this method sets a Character's ability (Strength, Constitution, Dexterity, Charisma, Intelligence or Wisdom).
      * @param ability the chosen ability to be set.
      * @param score the score to set to the ability.
      */
@@ -173,10 +202,11 @@ public class character
         this.initialCharactersAttributes.put(ability,score);
         setFinalAbilities();
         setAbilitiesBonus();
+//        ((MainActivity)getActivity()).changeSkillTabTitle(dubo.calculateMaxSkillPoints());
     }
 
     /**
-     * this method starts the procedure of character feat selection accourding to the amount of available feats to be selected
+     * this method starts the procedure of Character feat selection accourding to the amount of available feats to be selected
      */
     public void featsSelection()
     {
@@ -240,7 +270,7 @@ public class character
     }
 
     /**
-     * this method prints out the character's name.
+     * this method prints out the Character's name.
      *
      */
     public void printCharacterName()
@@ -249,8 +279,8 @@ public class character
     }
 
     /**
-     * this method adds a feat to the character.
-     * @param  addedFeat The feat added to the character.
+     * this method adds a feat to the Character.
+     * @param  addedFeat The feat added to the Character.
      */
     public void addFeat(String addedFeat)
     {
@@ -366,18 +396,95 @@ public class character
             return false;
         }
     }
-
+    public void calculateCharactersAttribute(String attribute)
+    {
+        calculatedCharactersAttributes.put(attribute,initialCharactersAttributes.get(attribute)+featBenefits(attribute)+equipmentBenefits(attribute)+skillBenefits(attribute));
+    }
     /**
-     * this method returns a selected calculated attribute of the character (initial+feat bonuses+skill bonuses+equipment bonuses).
+     * this method returns a selected calculated attribute of the Character (initial+feat bonuses+skill bonuses+equipment bonuses).
      * @param  attribute The selected attribute to return.
      * @return the calculated attribute.
      */
     public Integer getCalculatedAttribute(String attribute)
     {
-        calculatedCharactersAttributes.put(attribute,initialCharactersAttributes.get(attribute)+featBenefits(attribute)+equipmentBenefits(attribute)+skillBenefits(attribute));
         return calculatedCharactersAttributes.get(attribute);
     }
 
+    public int calculateSkillTotal(String skill, String keyAbility){
+        if (characterSkillMap.get(skill.toLowerCase())==null) {
+            characterSkillMap.put(skill.toLowerCase(), new CharacterSkill(skill.toLowerCase()));
+        }
+        CharacterSkill selectedCharacterSkill= characterSkillMap.get(skill.toLowerCase());
+        int skillRank=selectedCharacterSkill.getPoints();
+        int skillBonus;
+        if (keyAbility.toLowerCase().matches("non")){
+            skillBonus=0;
+        }
+        else {
+            skillBonus=initialCharactersAttributes.get(keyAbility.toLowerCase()+"Bonus");
+        }
+        int miscBonus= 0;
+        try {
+            miscBonus = miscSkillMod.get(Database.getInstance().getSkillsList().indexOf(skill));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return skillRank+skillBonus+miscBonus;
+    }
+
+    public int calculateMaxSkillPoints(){
+        int classSkillPoints=0;
+        int raceSkillPoints=0;
+        int maxSkillPoints=0;
+        if (this.getCharRace()!=null) {
+            if (this.getCharRace().toLowerCase().equals("human")) {
+                raceSkillPoints = 4;
+            }
+        }
+        if (this.classList.size()!=0) {
+            switch (this.classList.get(0).toLowerCase()) {
+                case "barbarian":
+                    classSkillPoints = classSkillPoints + (4 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "bard":
+                    classSkillPoints = classSkillPoints + (6 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "cleric":
+                    classSkillPoints = classSkillPoints + (2 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "druid":
+                    classSkillPoints = classSkillPoints + (4 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "fighter":
+                    classSkillPoints = classSkillPoints + (2 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "monk":
+                    classSkillPoints = classSkillPoints + (4 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "paladin":
+                    classSkillPoints = classSkillPoints + (2 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "ranger":
+                    classSkillPoints = classSkillPoints + (6 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "rogue":
+                    classSkillPoints = classSkillPoints + (8 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "sorcerer":
+                    classSkillPoints = classSkillPoints + (2 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+                case "wizard":
+                    classSkillPoints = classSkillPoints + (2 + initialCharactersAttributes.get("intelligenceBonus")) * 4;
+                    break;
+            }
+            maxSkillPoints=raceSkillPoints+classSkillPoints;
+            if (maxSkillPoints<=0) {
+                maxSkillPoints=1;
+            }
+            return maxSkillPoints;
+        }
+        else return 0;
+    }
     /**
      * this method returns the benefit to a selected attribute due to bonuses from the characters feat.
      * @param attribute The selected attribute to return.
@@ -425,8 +532,8 @@ public class character
     }
 
     /**
-     * this method removes a feat from the character.
-     * @param  featToRemove The feat added to the character.
+     * this method removes a feat from the Character.
+     * @param  featToRemove The feat added to the Character.
      */
     public void removeFeat(String featToRemove)
     {
@@ -434,8 +541,8 @@ public class character
     }
 
     /**
-     * this method returns the list of feats this character has.
-     * @return  a list of feats this character has.
+     * this method returns the list of feats this Character has.
+     * @return  a list of feats this Character has.
      */
     public ArrayList getFeatList()
     {
@@ -443,7 +550,7 @@ public class character
     }
 
     /**
-     * this method prints out the list of feats this character has.
+     * this method prints out the list of feats this Character has.
      */
     public void printFeatList()
     {
@@ -454,8 +561,8 @@ public class character
     }
 
     /**
-     * this method returns the amount of feats this character has.
-     * @return  the amount of feats this character has.
+     * this method returns the amount of feats this Character has.
+     * @return  the amount of feats this Character has.
      */
     public int getFeatAmount()
     {
@@ -463,7 +570,7 @@ public class character
     }
 
     /**
-     * this method prints out all this character's abilitys.
+     * this method prints out all this Character's abilitys.
      */
     public void printAllAbility()
     {
@@ -485,6 +592,7 @@ public class character
 
     public void setCharRace(String charRace) {
         this.charRace = charRace;
+        calculateMaxSkillPoints();
         setRaceAbilities();
         setFinalAbilities();
         setAbilitiesBonus();
@@ -497,7 +605,7 @@ public class character
         initialCharactersAttributes.put("intelligenceBonus",(initialCharactersAttributes.get("finalIntelligence")+30)/2-20);
         initialCharactersAttributes.put("wisdomBonus",(initialCharactersAttributes.get("finalWisdom")+30)/2-20);
         initialCharactersAttributes.put("charismaBonus",(initialCharactersAttributes.get("finalCharisma")+30)/2-20);
-
+        this.listener.handleCharacterChange(this);
     }
 
     private void setRaceAbilities() {
@@ -573,5 +681,163 @@ public class character
 
     public int getAbility(String ability) {
         return getCalculatedAttribute(ability);
+    }
+    public CharacterSkill getCharacterSkill(String skill){
+        if (characterSkillMap.get(skill)==null) {
+            characterSkillMap.put(skill, new CharacterSkill(skill));
+        }
+        return characterSkillMap.get(skill);
+    }
+
+    public void increaseCharacterSkill(String skill){
+        if (characterSkillMap.get(skill)==null) {
+            characterSkillMap.put(skill, new CharacterSkill(skill));
+        }
+        CharacterSkill characterSkill= characterSkillMap.get(skill);
+        characterSkill.increasePoints();
+        this.listener.handleCharacterChange(this);
+    }
+
+    public void decreaseCharacterSkill(String skill){
+        CharacterSkill characterSkill=characterSkillMap.get(skill);
+        characterSkill.decreasePoints();
+        this.listener.handleCharacterChange(this);
+        if (characterSkill.getPoints()==0){
+            characterSkillMap.remove(skill);
+            characterSkill=null;
+        }
+    }
+
+    public int calculateRemainingSkillPoints() {
+        return calculateMaxSkillPoints()-calculateUsedSkillPoints();
+    }
+
+    private int calculateUsedSkillPoints() {
+        int usedSkillPoints=0;
+        for (Map.Entry<String,CharacterSkill> entry: characterSkillMap.entrySet()){
+            usedSkillPoints=usedSkillPoints+entry.getValue().getPoints();
+        }
+        return usedSkillPoints;
+    }
+    public void setMiscSkillMod() {
+        for (int i=0; i<miscSkillMod.size(); i++){
+            miscSkillMod.set(i,skillSynergiesMod.get(i));
+        }
+    }
+    public void setSkillSynergiesMod(String skill, boolean b) {
+        try {
+            if (b == true) {
+                switch (skill) {
+                    case "bluff":
+                        this.bluffDiplomacy=2;
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Disguise"), 2);
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Intimidate"), 2);
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Sleight of Hand"), 2);
+                        break;
+                    case "handle animal":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Ride"), 2);
+                        break;
+                    case "jump":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Tumble"), 2);
+                        break;
+                    case "knowledge arcana":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Spellcraft"), 2);
+                        break;
+                    case "knowledge local":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Gather Information"), 2);
+                        break;
+                    case "knowledge (nobility and royalty)":
+                        this.knowledgeDiplomacy=2;
+                        break;
+                    case "sense motive":
+                        this.senseMotiveDiplomacy=2;
+                        break;
+                    case "survival":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Knowledge Nature"), 2);
+                        break;
+                    case "tumble":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Balance"), 2);
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Jump"), 2);
+                        break;
+                }
+                skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Diplomacy"), this.bluffDiplomacy+this.knowledgeDiplomacy+this.senseMotiveDiplomacy);
+            }
+            else {
+                switch (skill){
+                    case "bluff":
+                        this.bluffDiplomacy=0;
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Disguise"), 0);
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Intimidate"), 0);
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Sleight of Hand"), 0);
+                        break;
+                    case "handle animal":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Ride"), 0);
+                        break;
+                    case "jump":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Tumble"),0);
+                        break;
+                    case "knowledge arcana":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Spellcraft"), 0);
+                        break;
+                    case "knowledge local":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Gather Information"), 0);
+                        break;
+                    case "knowledge (nobility and royalty)":
+                        this.knowledgeDiplomacy=0;
+                        break;
+                    case "sense motive":
+                        this.senseMotiveDiplomacy=0;
+                        break;
+                    case "survival":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Knowledge Nature"), 0);
+                        break;
+                    case "tumble":
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Balance"), 0);
+                        skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Jump"), 0);
+                        break;
+                }
+                skillSynergiesMod.set(Database.getInstance().getSkillsList().indexOf("Diplomacy"), this.bluffDiplomacy+this.knowledgeDiplomacy+this.senseMotiveDiplomacy);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Integer> getMiscSkillMod() {
+        return miscSkillMod;
+    }
+
+    public ArrayList<Integer> getSkillTotal() {
+        try
+        {
+            int j=Database.getInstance().getSkillsList().size();
+            for (int i=0; i<j;i++)
+            {
+                skillTotal.set(i,calculateSkillTotal(Database.getInstance().getSkillsList().get(i),Database.getInstance().getSkillsAbilityList().get(i)));
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace(System.out);
+        }
+        return skillTotal;
+    }
+
+    public double getCrossSkill(String skill) {
+
+        double crossSkill=0;
+        if (crossClassList.get(skill)==1) {
+            crossSkill=1;
+        }
+        else crossSkill=0.5;
+        return crossSkill;
+    }
+
+    public void setClassList(String charClass) {
+        try {
+            this.crossClassList = Database.getInstance().getCrossClassList(charClass);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

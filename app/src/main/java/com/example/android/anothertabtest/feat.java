@@ -185,7 +185,7 @@ public class feat
     }
 
     /**
-     * This method returns the minimum level of character prerequisite.
+     * This method returns the minimum level of Character prerequisite.
      * @return     minimum level, 0 if no prerequisite.
      */
     public int getMinimumLevel()
@@ -194,7 +194,7 @@ public class feat
     }
 
     /**
-     * This method returns the minimum fighter level of character prerequisite.
+     * This method returns the minimum fighter level of Character prerequisite.
      * @return     minimum level, 0 if no prerequisite.
      */
     public int getMinimumFighterLevel()
@@ -203,7 +203,7 @@ public class feat
     }
 
     /**
-     * This method returns the minimum caster level of character prerequisite.
+     * This method returns the minimum caster level of Character prerequisite.
      * @return     minimum level, 0 if no prerequisite.
      */
     public int getMinimumCasterLevel()
@@ -212,7 +212,7 @@ public class feat
     }
 
     /**
-     * This method returns the minimum wizard level of character prerequisite.
+     * This method returns the minimum wizard level of Character prerequisite.
      * @return     minimum level, 0 if no prerequisite.
      */
     public int getMinimumWizardLevel()

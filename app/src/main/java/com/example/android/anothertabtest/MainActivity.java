@@ -15,17 +15,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-
-import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
@@ -34,20 +28,15 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.opencsv.CSVReader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import static com.example.android.anothertabtest.R.raw.crossskill;
 import static com.example.android.anothertabtest.R.raw.skills;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements characterChangeListener {
 
 
 
@@ -70,14 +59,12 @@ public class MainActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-    public static character dubo;// = new character("");
+    public static Character dubo;// = new Character("");
     private ArrayList<Skill> skillsArray;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -87,18 +74,20 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(0);
+        mViewPager.setOffscreenPageLimit(1);
 
         Database.gameType = "D20V3.5";
         CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(skills)));
         Database.skillsReader = reader;
+        CSVReader crossSkillReader = new CSVReader(new InputStreamReader(getResources().openRawResource(crossskill)));
+        Database.crossSkillReader = crossSkillReader;
 //        InputStream skillsCsv = getResources().openRawResource(skills);
 //        try {
 //            Database.getInstance().setData(skillsCsv);
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        dubo = new character("");
+        dubo = new Character(this);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_menu_gallery);
@@ -158,8 +147,14 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    public void changeSkillTabTitle(int number){
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        if (number==0) tabLayout.getTabAt(1).setText("SKILLS");
+        else tabLayout.getTabAt(1).setText("SKILLS ("+number+")");
+    }
     public void testButton(View view) {
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.getTabAt(3).setText("test");
         TextView characterNameTextView = (TextView) findViewById(R.id.char_name_box);
         String characterName = characterNameTextView.getText().toString();
         Spinner characterClassSpinner = (Spinner) findViewById(R.id.class_spinner);
@@ -170,11 +165,7 @@ public class MainActivity extends AppCompatActivity {
         dubo.setRandomAbility();
         dubo.levelUp(1);
         System.out.println(dubo.getCalculatedAttribute("hitPoints"));
-//        dubo.levelUp("Fighter");
-//        dubo.levelUp("Fighter");
-//        dubo.levelUp("Fighter");
-//        dubo.levelUp("Fighter");
-//        dubo.levelUp("Fighter");
+
         System.out.println(dubo.getCalculatedAttribute("hitPoints"));
         for (Map.Entry<String, Integer> entry : dubo.calculatedCharactersAttributes.entrySet()) {
             if (entry.getValue() > 0) {
@@ -231,6 +222,26 @@ public class MainActivity extends AppCompatActivity {
         client.disconnect();
     }
 
+    @Override
+    public void handleCharacterChange(com.example.android.anothertabtest.Character Character) {
+        changeSkillTabTitle(Character.calculateRemainingSkillPoints());
+        dubo.getSkillTotal();
+        if (dubo.calculateRemainingSkillPoints()>0) {
+            try {
+                Database.getInstance().setAllAddButtonEnable(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                Database.getInstance().setAllAddButtonEnable(false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 //    public void set_random_abilities(View view) {
 //        dubo.setRandomAbility();
 //        Tab1Main.setRandomAbility();
@@ -249,10 +260,7 @@ public class MainActivity extends AppCompatActivity {
         private Context mContext;
         public SectionsPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
-//            this.setOffscreenPageLimit(int limit)
-            mFragmentManager = fm;
-            mFragmentTags = new HashMap<Integer, String>();
-            mContext=context;
+
         }
 
         @Override
@@ -277,35 +285,17 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 4;
         }
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Object obj = super.instantiateItem(container,position);
-            if (obj instanceof Fragment) {
-                Fragment f = (Fragment) obj;
-                String tag = f.getTag();
-                mFragmentTags.put(position,tag);
-            }
-            return obj;
-        }
-
-        public Fragment getFragment(int position) {
-            String tag = mFragmentTags.get(position);
-            if (tag==null)
-                return null;
-            return mFragmentManager.findFragmentByTag(tag);
-            }
-
 
         @Override
         public CharSequence getPageTitle(int position) {
+            Log.d("SAMPLE","Title Getting called for "+position);
             switch (position) {
                 case 0:
                     return "Main";
                 case 1:
-                    return "Skills";
+                    return "Skills ("+dubo.calculateMaxSkillPoints()+")";
                 case 2:
                     return "Feats";
                 case 3:

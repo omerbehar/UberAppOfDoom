@@ -6,7 +6,7 @@ package com.example.android.anothertabtest;
 
 import java.util.ArrayList;
 /**
- * this class represents the character ability (strength, constitution...).
+ * this class represents the Character ability (strength, constitution...).
  *
  * @author (your name)
  * @version (a version number or a date)
@@ -86,7 +86,7 @@ public class ability
     public void printAbilityRank()
     {
         // put your code here
-        System.out.println("this character has "+this.abilityRank+" "+this.abilityName);
+        System.out.println("this Character has "+this.abilityRank+" "+this.abilityName);
     }
     /**
      * this methods prints out the ability's bonus.

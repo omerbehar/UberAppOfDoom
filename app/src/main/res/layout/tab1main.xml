@@ -45,7 +45,8 @@
             android:layout_marginRight="8dp"
             android:id="@+id/class_spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
         </Spinner>
 
     </LinearLayout>
@@ -385,6 +386,21 @@
         android:layout_height="wrap_content"
         android:text="random"
         android:id="@+id/set_random_abilities"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Skill Points"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:id="@+id/skill_points" />
+    </LinearLayout>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

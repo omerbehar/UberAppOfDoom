@@ -4,7 +4,8 @@
     android:orientation="vertical" >
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="40dp"
+        android:background="#d3d3d3"
     android:orientation="horizontal" >
 
     <TextView
@@ -15,58 +16,65 @@
         android:layout_height="fill_parent"
         android:layout_weight="0.3"
         android:gravity="center" />
-    <TextView
-        android:layout_marginLeft="8dp"
-        android:id="@+id/skill_ability"
-        android:text="Ability"
-        android:layout_width="0sp"
-        android:layout_height="fill_parent"
-        android:layout_weight="0.1"
-        android:textAllCaps="true"
-        android:maxLength="3"
-        android:gravity="center_vertical" />
-    <TextView
-        android:layout_marginLeft="8dp"
-        android:id="@+id/skill_total"
-        android:text="Skill Total"
-        android:layout_width="0sp"
-        android:layout_height="fill_parent"
-        android:layout_weight="0.1"
-        android:gravity="center_vertical" />
-    <TextView
+    <!--<TextView-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:id="@+id/skill_ability"-->
+        <!--android:text="Ability"-->
+        <!--android:layout_width="0sp"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:layout_weight="0.1"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:maxLength="3"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:visibility="invisible"/>-->
+        <TextView
         android:layout_marginLeft="8dp"
         android:id="@+id/skill_ability_mod"
-        android:text="Ability Mod"
+        android:text="Abil."
         android:layout_width="0sp"
         android:layout_height="fill_parent"
         android:layout_weight="0.1"
         android:gravity="center_vertical" />
-
-
-
-    <TextView
+        <TextView
+            android:layout_marginLeft="8dp"
+            android:id="@+id/misc_skill_mod"
+            android:text="Misc."
+            android:layout_width="0sp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.1"
+            android:gravity="center_vertical" />
+        <TextView
         android:layout_width="0sp"
         android:layout_height="fill_parent"
         android:layout_weight="0.1"
         android:gravity="center_vertical" />
-    <TextView
+        <TextView
         android:id="@+id/skill_ranks"
-        android:text="Ranks"
+        android:text="Rank"
         android:layout_width="0sp"
         android:layout_height="fill_parent"
         android:layout_weight="0.1"
         android:gravity="center_vertical" />
-    <TextView
+        <TextView
         android:layout_width="0sp"
         android:layout_height="fill_parent"
         android:layout_weight="0.1"
         android:gravity="center_vertical" />
-</LinearLayout>
+        <TextView
+            android:layout_marginLeft="8dp"
+            android:id="@+id/skill_total"
+            android:text="Total"
+            android:layout_width="0sp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.1"
+            android:gravity="center_vertical" />
+    </LinearLayout>
 <ListView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
 
     </ListView>

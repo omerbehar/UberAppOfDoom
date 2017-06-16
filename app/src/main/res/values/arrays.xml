@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="class_array">
-        <item>Fighter</item>
+        <item>Barbarian</item>
+        <item>Bard</item>
         <item>Cleric</item>
-        <item>Wizard</item>
-        <item>Paladin</item>
-        <item>Thief</item>
-        <item>Sorcerer</item>
         <item>Druid</item>
+        <item>Fighter</item>
+        <item>Monk</item>
+        <item>Paladin</item>
+        <item>Ranger</item>
+        <item>Rogue</item>
+        <item>Sorcerer</item>
+        <item>Wizard</item>
     </string-array>
     <string-array name="race_array">
         <item>Human</item>

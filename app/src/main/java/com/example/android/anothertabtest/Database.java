@@ -4,6 +4,8 @@ package com.example.android.anothertabtest;
  * Created by Omer's on 3/10/2017.
  */
 
+import android.widget.Switch;
+
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
@@ -12,12 +14,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.AbstractList;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static android.R.attr.src;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Loads up all data bases including feats, abilities, skills, equipment ect.
@@ -28,9 +34,11 @@ import static android.R.attr.src;
 public class Database
 {
     public static CSVReader skillsReader;
+    public static CSVReader crossSkillReader;
     private ArrayList<ability> abilities=new ArrayList<ability>();
     private static final String FeatFile = "feats2.csv";
-    private static final String SkillFile = "C:\\androidstudioprojects\\AnotherTabTest\\app\\src\\main\\res\\raw\\skills.csv";
+//    private static final String SkillFile = "C:\\androidstudioprojects\\AnotherTabTest\\app\\src\\main\\res\\raw\\skills.csv";
+//    private static final String crossSkillFile = "C:\\androidstudioprojects\\AnotherTabTest\\app\\src\\main\\res\\raw\\crossSkill.csv";
     private static final String ClassFile = "classes.csv";
     public ArrayList<feat> feats=new ArrayList<feat>();
     public Map<String,feat> featsMap=new HashMap<String,feat>();
@@ -43,6 +51,22 @@ public class Database
     private InputStream skillsCsv;
     private ArrayList<String> skillsList=new ArrayList<>();
     private ArrayList<String> skillsAbilityList=new ArrayList<>();
+    private ArrayList<Boolean> addButtonEnableList= new ArrayList<>();
+    private ArrayList<Boolean> subButtonEnableList= new ArrayList<>();
+    private ArrayList<Integer> miscSkillMod= new ArrayList<>();
+    private ArrayList<Integer> skillSynergiesMod= new ArrayList<>();
+    public Map<String,Integer> barbarianCS=new HashMap<String,Integer>();
+    public Map<String,Integer> bardCS=new HashMap<String,Integer>();
+    public Map<String,Integer> clericCS=new HashMap<String,Integer>();
+    public Map<String,Integer> druidCS=new HashMap<String,Integer>();
+    public Map<String,Integer> fighterCS=new HashMap<String,Integer>();
+    public Map<String,Integer> monkCS=new HashMap<String,Integer>();
+    public Map<String,Integer> paladinCS=new HashMap<String,Integer>();
+    public Map<String,Integer> rangerCS=new HashMap<String,Integer>();
+    public Map<String,Integer> rogueCS=new HashMap<String,Integer>();
+    public Map<String,Integer> sorcererCS=new HashMap<String,Integer>();
+    public Map<String,Integer> wizardCS=new HashMap<String,Integer>();
+
 
     /**
      * this method returns the single instance of a database.
@@ -153,8 +177,28 @@ public class Database
         {
             this.skillsList.add(tempSkill.getSkillName());
             this.skillsAbilityList.add(tempSkill.getSkillAbility());
+            this.addButtonEnableList.add(true);
+            this.subButtonEnableList.add(false);
+            this.skillSynergiesMod.add(0);
+            this.miscSkillMod.add(0);
             skillsMap.put(tempSkill.getSkillName(),tempSkill);
         }
+        String[] nextLineCross=crossSkillReader.readNext();
+        while ((nextLineCross = crossSkillReader.readNext()) != null)
+        {
+            String skillName=nextLineCross[0].trim().toLowerCase();
+            barbarianCS.put(skillName,Integer.parseInt(nextLineCross[1]));
+            bardCS.put(skillName,Integer.parseInt(nextLineCross[2]));
+            clericCS.put(skillName,Integer.parseInt(nextLineCross[3]));
+            druidCS.put(skillName,Integer.parseInt(nextLineCross[4]));
+            fighterCS.put(skillName,Integer.parseInt(nextLineCross[5]));
+            monkCS.put(skillName,Integer.parseInt(nextLineCross[6]));
+            paladinCS.put(skillName,Integer.parseInt(nextLineCross[7]));
+            rangerCS.put(skillName,Integer.parseInt(nextLineCross[8]));
+            rogueCS.put(skillName,Integer.parseInt(nextLineCross[9]));
+            sorcererCS.put(skillName,Integer.parseInt(nextLineCross[10]));
+        }
+
     }
 
     /**
@@ -246,5 +290,88 @@ public class Database
 
     public ArrayList<String> getSkillsAbilityList() {
         return skillsAbilityList;
+    }
+
+    public ArrayList<Boolean> getAddButtonEnable() { return addButtonEnableList;
+    }
+    public void setAddButtonEnable(int position, Boolean state) { addButtonEnableList.set(position,state);
+    }
+    public void setAllAddButtonEnable(Boolean state){
+        for (int i=0; i<addButtonEnableList.size(); i++){
+            addButtonEnableList.set(i,state);
+        }
+    }
+    public ArrayList<Boolean> getSubButtonEnable() { return subButtonEnableList;
+    }
+    public void setSubButtonEnable(int position, Boolean state) { subButtonEnableList.set(position,state);
+    }
+    public void setAllSubButtonEnable(Boolean state){
+        for (int i=0; i<subButtonEnableList.size(); i++){
+            subButtonEnableList.set(i,state);
+        }
+    }
+
+    public void setMiscSkillMod() {
+        for (int i=0; i<miscSkillMod.size(); i++){
+            miscSkillMod.set(i,skillSynergiesMod.get(i));
+        }
+    }
+    public void setSkillSynergiesMod(String skill, boolean b) {
+        if (b == true) {
+            switch (skill) {
+                case "bluff":
+                    skillSynergiesMod.set(skillsList.indexOf("Diplomacy"), 2);
+            }
+        }
+        else {
+            switch (skill){
+                case "bluff":
+                    skillSynergiesMod.set(skillsList.indexOf("Diplomacy"), 0);
+            }
+        }
+    }
+
+    public ArrayList<Integer> getMiscSkillMod() {
+        return miscSkillMod;
+    }
+
+    public Map<String, Integer> getCrossClassList(String characterClass) {
+        Map<String, Integer> result=null;
+        switch (characterClass.toLowerCase()){
+            case "barbarian":
+                result= barbarianCS;
+                break;
+            case "bard":
+                result= bardCS;
+                break;
+            case "cleric":
+                result= clericCS;
+                break;
+            case "druid":
+                result= druidCS;
+                break;
+            case "fighter":
+                result= fighterCS;
+                break;
+            case "monk":
+                result= monkCS;
+                break;
+            case "paladin":
+                result= paladinCS;
+                break;
+            case "ranger":
+                result= rangerCS;
+                break;
+            case "rogue":
+                result= rogueCS;
+                break;
+            case "sorcerer":
+                result= sorcererCS;
+                break;
+            case "wizard":
+                result= wizardCS;
+                break;
+        }
+        return result;
     }
 }

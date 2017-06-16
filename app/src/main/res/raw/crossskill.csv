@@ -1,0 +1,71 @@
+Skill,Bbn,Brd,Clr,Drd,Ftr,Mnk,Pal,Rgr,Rog,Sor,Wiz,Untrained,Ability
+Appraise,0,1,0,0,0,0,0,0,1,0,0,Yes,Int
+Balance,0,1,0,0,0,1,0,0,1,0,0,Yes,Dex1
+Bluff,0,1,0,0,0,0,0,0,1,1,0,Yes,Cha
+Climb,1,1,0,0,1,1,0,1,1,0,0,Yes,Str1
+Concentration,0,1,1,1,0,1,1,1,0,1,1,Yes,Con
+Craft (Alchemy),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Armorsmithing),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Bowmaking),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Blacksmithing),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Carpentry),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Leatherworking),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Painting),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Pottery),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Sculpting),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Shipmaking),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Stonemasonry),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Trapmaking),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Weaponsmithing),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Woodworking),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Craft (Untrained),1,1,1,1,1,1,1,1,1,1,1,Yes,Int
+Decipher Script,0,1,0,0,0,0,0,0,1,0,1,No,Int
+Diplomacy,0,1,1,1,0,1,1,0,1,0,0,Yes,Cha
+Disable Device,0,0,0,0,0,0,0,0,1,0,0,No,Int
+Disguise,0,1,0,0,0,0,0,0,1,0,0,Yes,Cha
+Escape Artist,0,1,0,0,0,1,0,0,1,0,0,Yes,Dex
+Forgery,0,0,0,0,0,0,0,0,1,0,0,Yes,Int,
+Gather Information,0,1,0,0,0,0,0,0,1,0,0,Yes,Cha
+Handle Animal,1,0,0,1,1,0,1,1,0,0,0,No,Cha
+Heal,0,0,1,1,0,0,1,1,0,0,0,Yes,Wis
+Hide,0,1,0,0,0,1,0,1,1,0,0,Yes,Dex1
+Intimidate,1,0,0,0,1,0,0,0,1,0,0,Yes,Cha
+Jump,1,1,0,0,1,1,0,1,1,0,0,Yes,Str1
+Knowledge (arcana),0,1,1,0,0,1,0,0,0,1,1,No,Int
+Knowledge (architecture and engineering),0,1,0,0,0,0,0,0,0,0,1,No,Int
+Knowledge (dungeoneering),0,1,0,0,0,0,0,1,0,0,1,No,Int
+Knowledge (geography),0,1,0,0,0,0,0,1,0,0,1,No,Int
+Knowledge (history),0,1,1,0,0,0,0,0,0,0,1,No,Int
+Knowledge (local),0,1,0,0,0,0,0,0,1,0,1,No,Int
+Knowledge (nature),0,1,0,1,0,0,0,1,0,0,1,No,Int
+Knowledge (nobility and royalty),0,1,0,0,0,0,1,0,0,0,1,No,Int
+Knowledge (religion),0,1,1,0,0,1,1,0,0,0,1,No,Int
+Knowledge (the planes),0,1,1,0,0,0,0,0,0,0,1,No,Int
+Listen,1,1,0,1,0,1,0,1,1,0,0,Yes,Wis
+Move Silently,0,1,0,0,0,1,0,1,1,0,0,Yes,Dex
+Open Lock,0,0,0,0,0,0,0,0,1,0,0,No,Dex
+Perform (Untrained),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Perform (Act),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Perform (Comedy),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Perform (Dance),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Perform (Keyboard Instruments),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Perform (Oratory),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Perform (Percussion Instruments),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Perform (String Instruments),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Perform (Wind Instruments),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Perform (Sing),0,1,0,0,0,1,0,0,1,0,0,Yes,Cha
+Profession (Hunter),0,1,1,1,0,1,1,1,1,1,1,No,Wis
+Profession (Miner),0,1,1,1,0,1,1,1,1,1,1,No,Wis
+Profession (Siege Engineer),0,1,1,1,0,1,1,1,1,1,1,No,Wis
+Ride,1,0,0,1,1,0,1,1,0,0,0,Yes,Dex
+Search,0,0,0,0,0,0,0,1,1,0,0,Yes,Int
+Sense Motive,0,1,0,0,0,1,1,0,1,0,0,Yes,Wis
+Sleight of Hand,0,1,0,0,0,0,0,0,1,0,0,No,Dex
+Speak Language,0,1,0,0,0,0,0,0,0,0,0,No,None
+Spellcraft,0,1,1,1,0,0,0,0,0,1,1,No,Int
+Spot,0,0,0,1,0,1,0,1,1,0,0,Yes,Wis
+Survival,1,0,0,1,0,0,0,1,0,0,0,Yes,Wis
+Swim,1,1,0,1,1,1,0,1,1,0,0,Yes,Str
+Tumble,0,1,0,0,0,1,0,0,1,0,0,No,Dex
+Use Magic Device,0,1,0,0,0,0,0,0,1,0,0,No,Cha
+Use Rope,0,0,0,0,0,0,0,1,1,0,0,Yes,Dex
